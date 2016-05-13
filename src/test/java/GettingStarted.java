@@ -1,11 +1,13 @@
 import com.hazelcast.core.*;
 import com.hazelcast.config.*;
+import org.junit.Test;
 
 import java.util.Map;
 import java.util.Queue;
 
 public class GettingStarted {
-    public static void main(String[] args) {
+    @Test
+    public void startTest() {
         Config cfg = new Config();
         HazelcastInstance instance = Hazelcast.newHazelcastInstance(cfg);
         Map<Integer, String> mapCustomers = instance.getMap("customers");
