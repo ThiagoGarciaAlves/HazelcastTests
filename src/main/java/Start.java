@@ -1,4 +1,6 @@
 import com.hazelcast.config.Config;
+import com.hazelcast.config.JoinConfig;
+import com.hazelcast.config.NetworkConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 
@@ -17,9 +19,24 @@ public class Start {
 
         Config cfg = new Config();
 
+        NetworkConfig network = cfg.getNetworkConfig();
+        JoinConfig join = network.getJoin();
+        join.getMulticastConfig().setEnabled(false);
+
+        join.getTcpIpConfig().addMember("192.168.0.157");
+        join.getTcpIpConfig().addMember("192.168.0.205");
+
+        join.getTcpIpConfig().setRequiredMember(null).setEnabled(true);
+
+        cfg.setProperty("hazelcast.initial.min.cluster.size", "2");
+
+        cfg.getGroupConfig().setName("HazelcastTests");
+
+        cfg.setProperty("hazelcast.health.monitoring.level", "OFF");
+
         HazelcastInstance instance = Hazelcast.newHazelcastInstance(cfg);
 
-        for (int i = 0; i < 50000; i++) {
+        for (int i = 0; i < 1000; i++) {
 
             Lock counterLock = instance.getLock("counter");
             counterLock.lock();
